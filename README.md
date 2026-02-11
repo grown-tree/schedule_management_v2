@@ -10,3 +10,5 @@
 - 인증/인가 절차는 `Cookie/Session`을 활용하여 개발합니다.
 - JPA 연관관계는 `단방향` 입니다. 정말 필요한 경우에만 `양방향`을 적용합니다.
 </aside>
+
+API 명세서 : https://iodized-dumpling-d74.notion.site/_v2-API-3049211612fe805bbfdfe9faca9aba72

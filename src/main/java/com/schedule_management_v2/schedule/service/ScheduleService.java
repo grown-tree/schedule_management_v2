@@ -1,0 +1,104 @@
+package com.schedule_management_v2.schedule.service;
+
+import com.schedule_management_v2.schedule.dto.ScheduleRequestDto;
+import com.schedule_management_v2.schedule.dto.ScheduleResponseDto;
+import com.schedule_management_v2.schedule.entity.Schedule;
+import com.schedule_management_v2.schedule.repository.ScheduleRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Service
+@RequiredArgsConstructor
+public class ScheduleService {
+
+    private final ScheduleRepository scheduleRepository;
+
+    //일정 생성
+    @Transactional
+    public ScheduleResponseDto save(ScheduleRequestDto scheduleRequestDto){
+        Schedule schedule =  new Schedule(
+                scheduleRequestDto.getTitle(),
+                scheduleRequestDto.getContent(),
+                scheduleRequestDto.getAuthor()
+        );
+        Schedule saveSchedule = scheduleRepository.save(schedule);
+        return new ScheduleResponseDto(
+                saveSchedule.getId(),
+                saveSchedule.getTitle(),
+                saveSchedule.getContent(),
+                saveSchedule.getAuthor(),
+                saveSchedule.getCreatedDate(),
+                saveSchedule.getUpdatedDate()
+        );
+    }
+
+    //일정 조회 : 전체조회, 작성자로 조회 (기본값 수정일 기준 내림차순 정렬)
+    @Transactional(readOnly = true)
+    public List<ScheduleResponseDto> getAll(){
+        List<Schedule> scheduleList = scheduleRepository.findAll();
+
+        //DTO로 변환 하여 반환(비밀번호제외됨)
+        return scheduleList.stream().map(schedule -> new ScheduleResponseDto(
+                schedule.getId(),
+                schedule.getTitle(),
+                schedule.getContent(),
+                schedule.getAuthor(),
+                schedule.getCreatedDate(),
+                schedule.getUpdatedDate()
+        )).collect(Collectors.toList());
+    }
+
+    //선택 일정 조회
+    @Transactional(readOnly = true)
+    public ScheduleResponseDto getSelectedSchedule(Long id) {
+        // id에 해당하는 일정을 찾고, 없으면 예외 처리
+        Schedule schedule = scheduleRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("해당 ID의 일정이 없습니다. " + id));
+
+        // DTO로 변환하여 반환
+        return new ScheduleResponseDto(
+                schedule.getId(),
+                schedule.getTitle(),
+                schedule.getContent(),
+                schedule.getAuthor(),
+                schedule.getCreatedDate(),
+                schedule.getUpdatedDate()
+        );
+    }
+
+    //일정 수정
+    @Transactional
+    public ScheduleResponseDto updateSchedule(Long id, ScheduleRequestDto requestDto) {
+        // 1. 해당 일정이 있는지 조회
+        Schedule schedule = scheduleRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("해당 일정이 존재하지 않습니다."));
+
+        // 2. 엔티티의 update 메서드 호출 (제목, 작성자, 내용 변경)
+        schedule.update(requestDto.getTitle(), requestDto.getAuthor(), requestDto.getContent());
+
+        // 3. 응답 DTO 반환 (비밀번호 제외)
+        return new ScheduleResponseDto(
+                schedule.getId(),
+                schedule.getTitle(),
+                schedule.getContent(),
+                schedule.getAuthor(),
+                schedule.getCreatedDate(),
+                schedule.getUpdatedDate()
+        );
+    }
+
+    //일정 삭제
+    @Transactional
+    public void deleteSchedule(Long id, ScheduleRequestDto requestDto) {
+        //일정 존재하는지 확인
+        Schedule schedule = scheduleRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("해당 일정이 존재하지 않습니다."));
+
+        scheduleRepository.delete(schedule);
+    }
+}
