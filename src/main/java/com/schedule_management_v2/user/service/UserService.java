@@ -1,6 +1,7 @@
 package com.schedule_management_v2.user.service;
 
 
+import com.schedule_management_v2.user.dto.LoginRequestDto;
 import com.schedule_management_v2.user.dto.UserRequestDto;
 import com.schedule_management_v2.user.dto.UserResponseDto;
 import com.schedule_management_v2.user.entity.User;
@@ -17,6 +18,25 @@ import java.util.stream.Collectors;
 public class UserService {
 
     private final UserRepository userRepository;
+
+    //로그인
+    @Transactional(readOnly = true)
+    public UserResponseDto login(LoginRequestDto request) {
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new IllegalArgumentException("이메일 또는 비밀번호가 일치하지 않습니다."));
+
+        if (!request.getUserPassword().equals(user.getUserPassword())) {
+            throw new IllegalArgumentException("이메일 또는 비밀번호가 일치하지 않습니다.");
+        }
+
+        return new UserResponseDto(
+                user.getId(),
+                user.getUserName(),
+                user.getEmail(),
+                user.getCreatedDate(),
+                user.getUpdatedDate()
+        );
+    }
 
     //유저 생성
     @Transactional

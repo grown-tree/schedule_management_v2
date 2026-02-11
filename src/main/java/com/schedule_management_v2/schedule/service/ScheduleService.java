@@ -7,11 +7,14 @@ import com.schedule_management_v2.schedule.repository.ScheduleRepository;
 import com.schedule_management_v2.user.entity.User;
 import com.schedule_management_v2.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.logging.Handler;
 import java.util.stream.Collectors;
 
 @Service
@@ -80,11 +83,16 @@ public class ScheduleService {
 
     //일정 수정
     @Transactional
-    public ScheduleResponseDto updateSchedule(Long id, ScheduleRequestDto requestDto) {
+    public ScheduleResponseDto updateSchedule(Long id, ScheduleRequestDto requestDto, Long loginUserId) {
         // 1. 해당 일정이 있는지 조회
         Schedule schedule = scheduleRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 일정이 존재하지 않습니다."));
-        // 2. 해당 일정을 쓴 유저가있는지 확인
+
+        // 2-1. 일정 작성자의 ID와 세션에서 넘어온 loginUserId 비교
+        if (!schedule.getUser().getId().equals(loginUserId)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "본인의 일정만 수정할 수 있습니다.");
+        }
+        // 2-2. 해당 일정을 쓴 유저가있는지 확인
         User user = userRepository.findById(requestDto.getUser_id())
                 .orElseThrow(() -> new IllegalArgumentException("해당 유저가 존재하지 않습니다."));
 
@@ -104,10 +112,16 @@ public class ScheduleService {
 
     //일정 삭제
     @Transactional
-    public void deleteSchedule(Long id, ScheduleRequestDto requestDto) {
+    public void deleteSchedule(Long id, ScheduleRequestDto requestDto,Long loginUserId) {
+
         //일정 존재하는지 확인
         Schedule schedule = scheduleRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 일정이 존재하지 않습니다."));
+
+        //일정작성자id와 세션유저id비교
+        if (!schedule.getUser().getId().equals(loginUserId)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "본인의 일정만 삭제할 수 있습니다.");
+        }
 
         scheduleRepository.delete(schedule);
     }
