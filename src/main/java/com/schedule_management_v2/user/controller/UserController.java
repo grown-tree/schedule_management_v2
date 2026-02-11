@@ -2,7 +2,6 @@ package com.schedule_management_v2.user.controller;
 
 import com.schedule_management_v2.user.dto.*;
 import com.schedule_management_v2.user.service.UserService;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -41,23 +40,18 @@ public class UserController {
     public ResponseEntity<UserResponseDto> updateUser(
             @PathVariable Long user_id,
             @RequestBody UserRequestDto requestDto,
-            HttpServletRequest request) {
+            @SessionAttribute(name = "loginUser", required = false) Long loginUserId) {
 
-        //세션있으면 가져오고 없으면 null반환 = 로그인여부확인
-        HttpSession session = request.getSession(false);
-
-        // 1. 세션 존재 여부 및 로그인 확인
-        if (session == null || session.getAttribute("loginUser") == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();//없는경우 401Unauthorized 반환
+        //로그인확인 아닌경우 401
+        if (loginUserId == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
-        //요청과 세션id비교
-        Long loginUserId = (Long)session.getAttribute("loginUser");
+        // 본인 여부 확인 (403) - PathVariable id와 세션 id 비교
         if (!loginUserId.equals(user_id)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build(); // 403 권한 없음
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
         UserResponseDto result = userService.updateUser(user_id, requestDto);
-
         return ResponseEntity.ok(result);
     }
 
@@ -65,20 +59,16 @@ public class UserController {
     public ResponseEntity<Void> deleteUser(
             @PathVariable Long user_id,
             @RequestBody UserRequestDto requestDto,
-            HttpServletRequest request) {
+            @SessionAttribute(name = "loginUser", required = false)Long loginUserId) {
 
-        //세션있으면 가져오고 없으면 null반환 = 로그인여부확인
-        HttpSession session = request.getSession(false);
-
-        // 1. 세션 존재 여부 및 로그인 확인
-        if (session == null || session.getAttribute("loginUser") == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();//없는경우 401Unauthorized 반환
+        //로그인확인 아닌경우 401
+        if (loginUserId == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
-        //요청과 세션id비교
-        Long loginUserId = (Long)session.getAttribute("loginUser");
+        // 본인 여부 확인 (403) - PathVariable id와 세션 id 비교
         if (!loginUserId.equals(user_id)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build(); // 403 권한 없음
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
 
         userService.deleteUser(user_id, requestDto);

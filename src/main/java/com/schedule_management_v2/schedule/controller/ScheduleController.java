@@ -3,8 +3,6 @@ package com.schedule_management_v2.schedule.controller;
 import com.schedule_management_v2.schedule.dto.ScheduleRequestDto;
 import com.schedule_management_v2.schedule.dto.ScheduleResponseDto;
 import com.schedule_management_v2.schedule.service.ScheduleService;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,15 +40,8 @@ public class ScheduleController {
     public ResponseEntity<ScheduleResponseDto> updateSchedule(
             @PathVariable Long id,
             @RequestBody ScheduleRequestDto requestDto,
-            HttpServletRequest request) {
-
-        HttpSession session = request.getSession(false);
-        if (session == null || session.getAttribute("loginUser") == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-
-        Long loginUserId = (Long) session.getAttribute("loginUser");
-
+            @SessionAttribute(name = "loginUser") Long loginUserId) {
+        //@SessionAttribute 를 통해 세션이 있으면 해당값을 loginUserId에 주입
         ScheduleResponseDto result = scheduleService.updateSchedule(id, requestDto, loginUserId);
 
         return ResponseEntity.ok(result);
