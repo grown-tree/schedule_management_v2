@@ -1,9 +1,12 @@
 package com.schedule_management_v2.schedule.entity;
 
+import com.schedule_management_v2.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Getter
 @Entity
@@ -15,24 +18,27 @@ public class Schedule extends BaseTimeEntity {
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         private Long id;
 
+        //연관관계
+        @ManyToOne(fetch = FetchType.LAZY)
+        @JoinColumn(name = "user_id")//유저테이블과 매핑
+        @OnDelete(action = OnDeleteAction.CASCADE)
+        private User user;
+
         @Column(length = 30, nullable = false)
         private String title;
 
         @Column(length = 200)
         private String content;
 
-        @Column(nullable = false)
-        private String author;
-
-        public Schedule(String title, String content, String author) {
+        public Schedule(String title, String content, User user) {
                 this.title = title;
                 this.content = content;
-                this.author = author;
+                this.user = user;
         }
         // 일정 수정 (제목, 작성자명만 수정 가능) 날짜는 자동업뎃
-        public void update(String title, String author,String content) {
+        public void update(String title, User user,String content) {
                 this.title = title;
-                this.author = author;
+                this.user = user;
                 this.content = content;
         }
 

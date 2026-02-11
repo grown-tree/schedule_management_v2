@@ -4,6 +4,8 @@ import com.schedule_management_v2.schedule.dto.ScheduleRequestDto;
 import com.schedule_management_v2.schedule.dto.ScheduleResponseDto;
 import com.schedule_management_v2.schedule.entity.Schedule;
 import com.schedule_management_v2.schedule.repository.ScheduleRepository;
+import com.schedule_management_v2.user.entity.User;
+import com.schedule_management_v2.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,21 +19,26 @@ import java.util.stream.Collectors;
 public class ScheduleService {
 
     private final ScheduleRepository scheduleRepository;
+    private final UserRepository userRepository;
 
     //일정 생성
     @Transactional
-    public ScheduleResponseDto save(ScheduleRequestDto scheduleRequestDto){
+    public ScheduleResponseDto save(ScheduleRequestDto requestDto){
+
+        User user = userRepository.findById(requestDto.getUser_id())
+                .orElseThrow(() -> new IllegalArgumentException("해당 유저를 찾을 수 없습니다."));
+
         Schedule schedule =  new Schedule(
-                scheduleRequestDto.getTitle(),
-                scheduleRequestDto.getContent(),
-                scheduleRequestDto.getAuthor()
+                requestDto.getTitle(),
+                requestDto.getContent(),
+                user
         );
         Schedule saveSchedule = scheduleRepository.save(schedule);
         return new ScheduleResponseDto(
                 saveSchedule.getId(),
                 saveSchedule.getTitle(),
                 saveSchedule.getContent(),
-                saveSchedule.getAuthor(),
+                user,
                 saveSchedule.getCreatedDate(),
                 saveSchedule.getUpdatedDate()
         );
@@ -47,7 +54,7 @@ public class ScheduleService {
                 schedule.getId(),
                 schedule.getTitle(),
                 schedule.getContent(),
-                schedule.getAuthor(),
+                schedule.getUser(),
                 schedule.getCreatedDate(),
                 schedule.getUpdatedDate()
         )).collect(Collectors.toList());
@@ -65,7 +72,7 @@ public class ScheduleService {
                 schedule.getId(),
                 schedule.getTitle(),
                 schedule.getContent(),
-                schedule.getAuthor(),
+                schedule.getUser(),
                 schedule.getCreatedDate(),
                 schedule.getUpdatedDate()
         );
@@ -77,16 +84,19 @@ public class ScheduleService {
         // 1. 해당 일정이 있는지 조회
         Schedule schedule = scheduleRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 일정이 존재하지 않습니다."));
+        // 2. 해당 일정을 쓴 유저가있는지 확인
+        User user = userRepository.findById(requestDto.getUser_id())
+                .orElseThrow(() -> new IllegalArgumentException("해당 유저가 존재하지 않습니다."));
 
-        // 2. 엔티티의 update 메서드 호출 (제목, 작성자, 내용 변경)
-        schedule.update(requestDto.getTitle(), requestDto.getAuthor(), requestDto.getContent());
+        // 3. 엔티티의 update 메서드 호출 (제목, 작성자 내용 변경)
+        schedule.update(requestDto.getTitle(),user, requestDto.getContent());
 
-        // 3. 응답 DTO 반환 (비밀번호 제외)
+        // 4. 응답 DTO 반환
         return new ScheduleResponseDto(
                 schedule.getId(),
                 schedule.getTitle(),
                 schedule.getContent(),
-                schedule.getAuthor(),
+                schedule.getUser(),
                 schedule.getCreatedDate(),
                 schedule.getUpdatedDate()
         );

@@ -24,7 +24,7 @@ public class ScheduleController {
     }
 
     @GetMapping
-    public  ResponseEntity<List<ScheduleResponseDto>> getSchedules(@RequestParam(required = false) String author) {
+    public  ResponseEntity<List<ScheduleResponseDto>> getSchedules() {
         List<ScheduleResponseDto> schedules = scheduleService.getAll();
         return ResponseEntity.ok(schedules);
     }

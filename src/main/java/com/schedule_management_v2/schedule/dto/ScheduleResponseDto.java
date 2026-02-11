@@ -1,5 +1,6 @@
 package com.schedule_management_v2.schedule.dto;
 
+import com.schedule_management_v2.user.entity.User;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
@@ -9,15 +10,15 @@ public class ScheduleResponseDto {
     private Long id;
     private String title;
     private String content;
-    private String author;
+    private User user;
     private LocalDateTime createdDate;
     private LocalDateTime updatedDate;
 
-    public ScheduleResponseDto(Long id, String title, String content, String author, LocalDateTime createdDate, LocalDateTime updatedDate) {
+    public ScheduleResponseDto(Long id, String title, String content, User user, LocalDateTime createdDate, LocalDateTime updatedDate) {
         this.id = id;
         this.title = title;
         this.content = content;
-        this.author = author;
+        this.user = user;
         this.createdDate = createdDate;
         this.updatedDate = updatedDate;
     }
