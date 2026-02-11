@@ -23,8 +23,8 @@ public class UserService {
     public UserResponseDto save(UserRequestDto userRequestDto){
         User user = new User(
                 userRequestDto.getUserName(),
-                userRequestDto.getEmail()
-//                userRequestDto.getUserPassword()
+                userRequestDto.getEmail(),
+                userRequestDto.getUserPassword()
         );
         User savedUser = userRepository.save(user);
         return new UserResponseDto(
@@ -76,8 +76,8 @@ public class UserService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 유저가 존재하지 않습니다."));
 
-        // 2. 엔티티의 update 메서드 호출 (이름, 이메일변경)
-        user.update(requestDto.getUserName(), requestDto.getEmail());
+        // 2. 엔티티의 update 메서드 호출 (이름, 이메일, 비밀번호 변경)
+        user.update(requestDto.getUserName(), requestDto.getEmail(),requestDto.getUserPassword());
 
         // 3. 응답 DTO 반환
         return new UserResponseDto(
