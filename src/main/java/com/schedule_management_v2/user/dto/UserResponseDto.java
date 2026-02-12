@@ -2,7 +2,6 @@ package com.schedule_management_v2.user.dto;
 
 import com.schedule_management_v2.user.entity.User;
 import lombok.Getter;
-
 import java.time.LocalDateTime;
 
 @Getter

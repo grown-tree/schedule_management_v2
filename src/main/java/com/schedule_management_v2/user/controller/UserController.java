@@ -43,15 +43,15 @@ public class UserController {
             @PathVariable Long user_id,
             @Valid
             @RequestBody UserRequestDto requestDto,
-            @SessionAttribute(name = "loginUser", required = false) Long loginUserId) {
+            @SessionAttribute(name = "loginUser", required = false) SessionUserDto loginUser) {
 
         //로그인확인 아닌경우 401
-        if (loginUserId == null) {
+        if (loginUser == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
         // 본인 여부 확인 (403) - PathVariable id와 세션 id 비교
-        if (!loginUserId.equals(user_id)) {
+        if (!loginUser.getId().equals(user_id)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
         UserResponseDto result = userService.updateUser(user_id, requestDto);
@@ -62,15 +62,15 @@ public class UserController {
     public ResponseEntity<Void> deleteUser(
             @PathVariable Long user_id,
             @RequestBody UserRequestDto requestDto,
-            @SessionAttribute(name = "loginUser", required = false)Long loginUserId) {
+            @SessionAttribute(name = "loginUser", required = false)SessionUserDto  loginUser) {
 
         //로그인확인 아닌경우 401
-        if (loginUserId == null) {
+        if (loginUser == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
         // 본인 여부 확인 (403) - PathVariable id와 세션 id 비교
-        if (!loginUserId.equals(user_id)) {
+        if (!loginUser.getId().equals(user_id)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
 

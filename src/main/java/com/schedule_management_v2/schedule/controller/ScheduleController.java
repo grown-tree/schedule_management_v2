@@ -3,6 +3,7 @@ package com.schedule_management_v2.schedule.controller;
 import com.schedule_management_v2.schedule.dto.ScheduleRequestDto;
 import com.schedule_management_v2.schedule.dto.ScheduleResponseDto;
 import com.schedule_management_v2.schedule.service.ScheduleService;
+import com.schedule_management_v2.user.dto.SessionUserDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -44,9 +45,9 @@ public class ScheduleController {
             @PathVariable Long id,
             @Valid
             @RequestBody ScheduleRequestDto requestDto,
-            @SessionAttribute(name = "loginUser") Long loginUserId) {
+            @SessionAttribute(name = "loginUser",required = false) SessionUserDto loginUser) {
         //@SessionAttribute 를 통해 세션이 있으면 해당값을 loginUserId에 주입
-        ScheduleResponseDto result = scheduleService.updateSchedule(id, requestDto, loginUserId);
+        ScheduleResponseDto result = scheduleService.updateSchedule(id, requestDto, loginUser.getId());
 
         return ResponseEntity.ok(result);
     }
@@ -55,13 +56,13 @@ public class ScheduleController {
     public ResponseEntity<Void> deleteSchedule(
             @PathVariable Long id,
             @RequestBody ScheduleRequestDto requestDto,
-            @SessionAttribute(name = "loginUser", required = false) Long loginUserId) {
+            @SessionAttribute(name = "loginUser", required = false) SessionUserDto loginUser) {
 
         // 세션이 만료되었거나 로그인이 안 된 경우 예외 처리
-        if (loginUserId == null) {
+        if (loginUser == null) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "로그인이 필요합니다.");
         }
-        scheduleService.deleteSchedule(id, requestDto,loginUserId );
+        scheduleService.deleteSchedule(id, requestDto,loginUser.getId() );
         return ResponseEntity.noContent().build();
     }
 
