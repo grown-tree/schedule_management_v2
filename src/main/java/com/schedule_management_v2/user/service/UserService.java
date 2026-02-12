@@ -1,6 +1,7 @@
 package com.schedule_management_v2.user.service;
 
 
+import com.schedule_management_v2.config.PasswordEncoder;
 import com.schedule_management_v2.user.dto.LoginRequestDto;
 import com.schedule_management_v2.user.dto.UserRequestDto;
 import com.schedule_management_v2.user.dto.UserResponseDto;
@@ -18,6 +19,7 @@ import java.util.stream.Collectors;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     //로그인
     @Transactional(readOnly = true)
@@ -25,7 +27,11 @@ public class UserService {
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new IllegalArgumentException("이메일 또는 비밀번호가 일치하지 않습니다."));
 
-        if (!request.getUserPassword().equals(user.getUserPassword())) {
+//        if (!request.getUserPassword().equals(user.getUserPassword())) {
+//            throw new IllegalArgumentException("이메일 또는 비밀번호가 일치하지 않습니다.");
+//        }
+        //인코딩된 비밀번호와 사용자가입력한 아이디를 matches메서드 활용해 비교
+        if (!passwordEncoder.matches(request.getUserPassword(), user.getUserPassword())) {
             throw new IllegalArgumentException("이메일 또는 비밀번호가 일치하지 않습니다.");
         }
 
@@ -41,10 +47,13 @@ public class UserService {
     //유저 생성
     @Transactional
     public UserResponseDto save(UserRequestDto userRequestDto){
+        //유저가 입력한 비밀번호를 암호화하여 저장
+        String encodedPassword = passwordEncoder.encode(userRequestDto.getUserPassword());
+
         User user = new User(
                 userRequestDto.getUserName(),
                 userRequestDto.getEmail(),
-                userRequestDto.getUserPassword()
+                encodedPassword
         );
         User savedUser = userRepository.save(user);
         return new UserResponseDto(
