@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,12 +15,13 @@ import java.util.List;
 @RestController
 @RequestMapping("/users")//공통경로
 @RequiredArgsConstructor
+@Validated
 public class UserController {
 
     private final UserService userService;
 
     @PostMapping
-    public ResponseEntity<UserResponseDto> create(@RequestBody UserRequestDto request) {
+    public ResponseEntity<UserResponseDto> create(@Valid @RequestBody UserRequestDto request) {
         UserResponseDto result = userService.save(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }
@@ -39,6 +41,7 @@ public class UserController {
     @PatchMapping("/{user_id}")
     public ResponseEntity<UserResponseDto> updateUser(
             @PathVariable Long user_id,
+            @Valid
             @RequestBody UserRequestDto requestDto,
             @SessionAttribute(name = "loginUser", required = false) Long loginUserId) {
 

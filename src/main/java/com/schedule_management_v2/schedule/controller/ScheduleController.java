@@ -3,9 +3,11 @@ package com.schedule_management_v2.schedule.controller;
 import com.schedule_management_v2.schedule.dto.ScheduleRequestDto;
 import com.schedule_management_v2.schedule.dto.ScheduleResponseDto;
 import com.schedule_management_v2.schedule.service.ScheduleService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -14,12 +16,13 @@ import java.util.List;
 @RestController
 @RequestMapping("/schedules")//공통경로
 @RequiredArgsConstructor
+@Validated //@PathVariable, @RequestParam 검증
 public class ScheduleController {
 
     private final ScheduleService scheduleService;
 
     @PostMapping
-    public ResponseEntity<ScheduleResponseDto> create(@RequestBody ScheduleRequestDto request) {
+    public ResponseEntity<ScheduleResponseDto> create(@Valid @RequestBody ScheduleRequestDto request) {
         ScheduleResponseDto result = scheduleService.save(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }
@@ -39,6 +42,7 @@ public class ScheduleController {
     @PatchMapping("/{id}")
     public ResponseEntity<ScheduleResponseDto> updateSchedule(
             @PathVariable Long id,
+            @Valid
             @RequestBody ScheduleRequestDto requestDto,
             @SessionAttribute(name = "loginUser") Long loginUserId) {
         //@SessionAttribute 를 통해 세션이 있으면 해당값을 loginUserId에 주입

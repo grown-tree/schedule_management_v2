@@ -2,6 +2,8 @@ package com.schedule_management_v2.schedule.entity;
 
 import com.schedule_management_v2.user.entity.User;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,9 +27,13 @@ public class Schedule extends BaseTimeEntity {
         private User user;
 
         @Column(length = 30, nullable = false)
+        @Size(max = 10, message = "할일 제목은 10글자 이내여야 합니다.")
+        @NotBlank
         private String title;
 
         @Column(length = 200)
+        @Size(min = 5, message = "할일 내용은은 최소 5글자 이상이여야 합니다.")
+        @NotBlank
         private String content;
 
         public Schedule(String title, String content, User user) {
