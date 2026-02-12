@@ -11,4 +11,15 @@
 - JPA 연관관계는 `단방향` 입니다. 정말 필요한 경우에만 `양방향`을 적용합니다.
 </aside>
 
-API 명세서 : https://iodized-dumpling-d74.notion.site/_v2-API-3049211612fe805bbfdfe9faca9aba72
+### < API 명세서: 링크 첨부>
+https://iodized-dumpling-d74.notion.site/_v2-API-3049211612fe805bbfdfe9faca9aba72
+
+### < ERD >
+![img.png](img.png)
+
+### 구현기능
+- 일정 CRUD(작성 유저명, 할일 제목, 할일 내용, 작성일, 수정일)
+- 유저 CRUD(유저명, 이메일, 작성일, 수정일)
+- 로그인 인증 및 비밀번호 암호화
+- 필요한 기능에 세션 검증하는 로직 추가
+- 제목길이, 이메일 형식 등 다양한 항목에 필요한 예외처리
