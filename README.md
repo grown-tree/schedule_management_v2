@@ -12,10 +12,11 @@
 </aside>
 
 ### < API 명세서: 링크 첨부>
-https://iodized-dumpling-d74.notion.site/_v2-API-3049211612fe805bbfdfe9faca9aba72
+- 각 API마다 요청 혹은 응답body가 존재하는 경우 페이지 열어 json확인
+- https://iodized-dumpling-d74.notion.site/_v2-API-3049211612fe805bbfdfe9faca9aba72
 
 ### < ERD >
-![img.png](img.png)
+![img_1.png](img_1.png)
 
 ### 구현기능
 - 일정 CRUD(작성 유저명, 할일 제목, 할일 내용, 작성일, 수정일)
@@ -23,3 +24,4 @@ https://iodized-dumpling-d74.notion.site/_v2-API-3049211612fe805bbfdfe9faca9aba7
 - 로그인 인증 및 비밀번호 암호화
 - 필요한 기능에 세션 검증하는 로직 추가
 - 제목길이, 이메일 형식 등 다양한 항목에 필요한 예외처리
+- 댓글 CRUD(댓글 생성,특정 일정의 전체댓글조회, 특정댓글만 조회, 댓글수정, 댓글삭제)

@@ -1,5 +1,6 @@
 package com.schedule_management_v2.schedule.dto;
 
+import com.schedule_management_v2.schedule.entity.Schedule;
 import com.schedule_management_v2.user.dto.UserResponseDto;
 import lombok.Getter;
 
@@ -24,4 +25,12 @@ public class ScheduleResponseDto {
     }
 
 
+    public ScheduleResponseDto(Schedule schedule) {
+        this.id = schedule.getId();
+        this.title = schedule.getTitle();
+        this.content = schedule.getContent();
+        this.user = new UserResponseDto(schedule.getUser());
+        this.createdDate = schedule.getCreatedDate();
+        this.updatedDate = schedule.getUpdatedDate();
+    }
 }
