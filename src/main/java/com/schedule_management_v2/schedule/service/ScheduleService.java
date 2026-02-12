@@ -4,6 +4,7 @@ import com.schedule_management_v2.schedule.dto.ScheduleRequestDto;
 import com.schedule_management_v2.schedule.dto.ScheduleResponseDto;
 import com.schedule_management_v2.schedule.entity.Schedule;
 import com.schedule_management_v2.schedule.repository.ScheduleRepository;
+import com.schedule_management_v2.user.dto.UserResponseDto;
 import com.schedule_management_v2.user.entity.User;
 import com.schedule_management_v2.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -41,7 +42,7 @@ public class ScheduleService {
                 saveSchedule.getId(),
                 saveSchedule.getTitle(),
                 saveSchedule.getContent(),
-                user,
+                new UserResponseDto(user),//응답시 유저객체에 비밀번호 노출되는 것방지
                 saveSchedule.getCreatedDate(),
                 saveSchedule.getUpdatedDate()
         );
@@ -57,7 +58,7 @@ public class ScheduleService {
                 schedule.getId(),
                 schedule.getTitle(),
                 schedule.getContent(),
-                schedule.getUser(),
+                new UserResponseDto(schedule.getUser()),
                 schedule.getCreatedDate(),
                 schedule.getUpdatedDate()
         )).collect(Collectors.toList());
@@ -75,7 +76,7 @@ public class ScheduleService {
                 schedule.getId(),
                 schedule.getTitle(),
                 schedule.getContent(),
-                schedule.getUser(),
+                new UserResponseDto(schedule.getUser()),
                 schedule.getCreatedDate(),
                 schedule.getUpdatedDate()
         );
@@ -104,7 +105,7 @@ public class ScheduleService {
                 schedule.getId(),
                 schedule.getTitle(),
                 schedule.getContent(),
-                schedule.getUser(),
+                new UserResponseDto(schedule.getUser()),
                 schedule.getCreatedDate(),
                 schedule.getUpdatedDate()
         );

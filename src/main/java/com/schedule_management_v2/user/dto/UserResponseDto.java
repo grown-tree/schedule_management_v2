@@ -1,5 +1,6 @@
 package com.schedule_management_v2.user.dto;
 
+import com.schedule_management_v2.user.entity.User;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
@@ -19,6 +20,12 @@ public class UserResponseDto {
         this.createdDate = createdDate;
         this.updatedDate = updatedDate;
     }
-
+    public UserResponseDto(User user) {
+        this.id = user.getId();
+        this.userName = user.getUserName();
+        this.email = user.getEmail();
+        this.createdDate = user.getCreatedDate();
+        this.updatedDate = user.getUpdatedDate();
+    }
 
 }

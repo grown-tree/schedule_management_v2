@@ -31,7 +31,7 @@ public class Schedule extends BaseTimeEntity {
         @NotBlank
         private String title;
 
-        @Column(length = 200)
+        @Column(length = 200,nullable = false)
         @Size(min = 5, message = "할일 내용은은 최소 5글자 이상이여야 합니다.")
         @NotBlank
         private String content;
