@@ -17,7 +17,7 @@
 - https://iodized-dumpling-d74.notion.site/_v2-API-3049211612fe805bbfdfe9faca9aba72
 
 ### < ERD >
-![erd.png](erd.png)
+![img_1.png](img_1.png)
 
 ### 구현기능
 - 일정 CRUD(작성 유저명, 할일 제목, 할일 내용, 작성일, 수정일)
