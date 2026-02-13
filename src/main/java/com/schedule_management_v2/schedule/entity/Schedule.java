@@ -41,7 +41,7 @@ public class Schedule extends BaseTimeEntity {
                 this.content = content;
                 this.user = user;
         }
-        // 일정 수정 (제목, 작성자명만 수정 가능) 날짜는 자동업뎃
+        // 일정 수정 날짜는 자동업뎃
         public void update(String title, User user,String content) {
                 this.title = title;
                 this.user = user;

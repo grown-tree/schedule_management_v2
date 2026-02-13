@@ -19,7 +19,6 @@ public class User extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-
     @Column(length = 30, nullable = false)
     @Size(max = 4, message = "유저명은 4글자 이내여야 합니다.")
     @NotBlank

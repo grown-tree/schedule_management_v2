@@ -8,6 +8,10 @@ import com.schedule_management_v2.user.dto.UserResponseDto;
 import com.schedule_management_v2.user.entity.User;
 import com.schedule_management_v2.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,6 +50,14 @@ public class ScheduleService {
                 saveSchedule.getCreatedDate(),
                 saveSchedule.getUpdatedDate()
         );
+    }
+
+    //페이징 처리 page = 가져올 페이지 번호, size = 한페이지 담을 데이터 개수
+    public Page<ScheduleResponseDto> pageableSchedules(int page, int size) {
+        // 수정일기준 내림차순 정렬  PageRequest를 활용하면 자동으로 처리해준다.
+        Pageable pageable = PageRequest.of(page, size, Sort.by("updatedDate").descending());
+
+        return scheduleRepository.findAllWithCommentCount(pageable);
     }
 
     //일정 조회 : 전체조회, 작성자로 조회 (기본값 수정일 기준 내림차순 정렬)

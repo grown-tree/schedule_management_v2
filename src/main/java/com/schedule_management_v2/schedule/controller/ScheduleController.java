@@ -6,6 +6,7 @@ import com.schedule_management_v2.schedule.service.ScheduleService;
 import com.schedule_management_v2.user.dto.SessionUserDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -26,6 +27,16 @@ public class ScheduleController {
     public ResponseEntity<ScheduleResponseDto> create(@Valid @RequestBody ScheduleRequestDto request) {
         ScheduleResponseDto result = scheduleService.save(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
+    }
+
+    //페이징처리
+    @GetMapping("/page")
+    public ResponseEntity<Page<ScheduleResponseDto>> pageableSchedules(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size // 디폴트 페이지 크기 10
+    ) {
+        Page<ScheduleResponseDto> response = scheduleService.pageableSchedules(page, size);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping
