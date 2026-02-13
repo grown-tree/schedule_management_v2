@@ -68,8 +68,8 @@ public class CommentService {
         if (!scheduleRepository.existsById(scheduleId)) {
             throw new IllegalArgumentException("해당 ID의 일정이 존재하지 않습니다. id=" + scheduleId);
         }
-        // 해당 댓글이 존재하는지 확인
-        Comment comment = commentRepository.findById(commentId)
+        // 해당 댓글이 존재하는지 확인 + 댓글에 맞는 일정번호인지도
+        Comment comment = commentRepository.findByIdAndSchedule_Id(commentId,scheduleId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 ID의 댓글이 없습니다. id=" + commentId));
 
         // DTO로 변환하여 반환
@@ -84,7 +84,7 @@ public class CommentService {
             throw new IllegalArgumentException("해당 ID의 일정이 존재하지 않습니다. id=" + scheduleId);
         }
         // 1. 해당 댓글이 존재하는지 확인
-        Comment comment = commentRepository.findById(commentId)
+        Comment comment = commentRepository.findByIdAndSchedule_Id(commentId,scheduleId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 댓글이 존재하지 않습니다."));
 
         // 2. 댓글 작성자의 ID와 세션에서 넘어온 loginUserId 비교 (권한 확인)
@@ -107,7 +107,7 @@ public class CommentService {
             throw new IllegalArgumentException("해당 ID의 일정이 존재하지 않습니다. id=" + scheduleId);
         }
         // 1. 해당 댓글이 존재하는지 확인
-        Comment comment = commentRepository.findById(commentId)
+        Comment comment = commentRepository.findByIdAndSchedule_Id(commentId,scheduleId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 댓글이 존재하지 않습니다."));
 
         // 2. 작성자 본인 확인

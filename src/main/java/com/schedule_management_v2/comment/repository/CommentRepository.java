@@ -5,6 +5,7 @@ import com.schedule_management_v2.schedule.entity.Schedule;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface CommentRepository extends JpaRepository<Comment, Long> {
 
@@ -13,4 +14,6 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     List<Comment> findAllByScheduleId(Long scheduleId);
 
     List<Comment> findAllByUserId(Long userId);
+
+    Optional<Comment> findByIdAndSchedule_Id(Long commentId, Long scheduleId);
 }
