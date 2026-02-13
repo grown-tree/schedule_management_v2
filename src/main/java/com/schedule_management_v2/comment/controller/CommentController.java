@@ -46,7 +46,7 @@ public class CommentController {
             @PathVariable Long scheduleId, // URL 구조 유지를 위해 포함
             @PathVariable Long commentId) {
 
-        CommentResponseDto responseDto = commentService.getSelectedComment(commentId);
+        CommentResponseDto responseDto = commentService.getSelectedComment(scheduleId,commentId);
         return ResponseEntity.ok(responseDto);
     }
 
@@ -60,7 +60,7 @@ public class CommentController {
 
         validateLogin(loginUser);
 
-        CommentResponseDto result = commentService.updateComment(commentId, requestDto, loginUser.getId());
+        CommentResponseDto result = commentService.updateComment(scheduleId, commentId,requestDto, loginUser.getId());
         return ResponseEntity.ok(result);
     }
 
@@ -73,7 +73,7 @@ public class CommentController {
 
         validateLogin(loginUser);
 
-        commentService.deleteComment(commentId, loginUser.getId());
+        commentService.deleteComment(scheduleId, commentId, loginUser.getId());
         return ResponseEntity.noContent().build();
     }
 

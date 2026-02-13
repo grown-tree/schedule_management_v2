@@ -63,18 +63,26 @@ public class CommentService {
     }
     // 단건 댓글 조회
     @Transactional(readOnly = true)
-    public CommentResponseDto getSelectedComment(Long commentId) {
-        // 1. 해당 댓글이 존재하는지 확인
+    public CommentResponseDto getSelectedComment(Long scheduleId, Long commentId) {
+        // 일정 존재 확인
+        if (!scheduleRepository.existsById(scheduleId)) {
+            throw new IllegalArgumentException("해당 ID의 일정이 존재하지 않습니다. id=" + scheduleId);
+        }
+        // 해당 댓글이 존재하는지 확인
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 ID의 댓글이 없습니다. id=" + commentId));
 
-        // 2. DTO로 변환하여 반환
+        // DTO로 변환하여 반환
         return new CommentResponseDto(comment);
     }
 
     // 댓글 수정
     @Transactional
-    public CommentResponseDto updateComment(Long commentId, CommentRequestDto requestDto, Long loginUserId) {
+    public CommentResponseDto updateComment(Long scheduleId, Long commentId, CommentRequestDto requestDto, Long loginUserId) {
+        // 일정 존재 확인
+        if (!scheduleRepository.existsById(scheduleId)) {
+            throw new IllegalArgumentException("해당 ID의 일정이 존재하지 않습니다. id=" + scheduleId);
+        }
         // 1. 해당 댓글이 존재하는지 확인
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 댓글이 존재하지 않습니다."));
@@ -93,7 +101,11 @@ public class CommentService {
 
     // 댓글 삭제
     @Transactional
-    public void deleteComment(Long commentId, Long loginUserId) {
+    public void deleteComment(Long scheduleId, Long commentId, Long loginUserId) {
+        // 일정 존재 확인
+        if (!scheduleRepository.existsById(scheduleId)) {
+            throw new IllegalArgumentException("해당 ID의 일정이 존재하지 않습니다. id=" + scheduleId);
+        }
         // 1. 해당 댓글이 존재하는지 확인
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 댓글이 존재하지 않습니다."));
